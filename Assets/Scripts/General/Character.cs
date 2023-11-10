@@ -15,11 +15,13 @@ public class Character : MonoBehaviour
     public bool defence;
 
     [Header("事件觸發")]
+    public UnityEvent<Character> OnHealthChange;
     public UnityEvent<Transform> OnTakeDamage;
     public UnityEvent OnDead;
     void Start()
     {
         currentHealth = maxHealth;
+        OnHealthChange?.Invoke(this);
     }
     void Update()
     {
@@ -46,6 +48,7 @@ public class Character : MonoBehaviour
             currentHealth -= attacker.damage;
             //執行受傷事件
             OnTakeDamage?.Invoke(attacker.transform);
+            TriggerInvulnerable();
         }
         else
         {
@@ -53,7 +56,7 @@ public class Character : MonoBehaviour
             //觸發死亡動畫
             OnDead?.Invoke();
         }
-        TriggerInvulnerable();
+        OnHealthChange?.Invoke(this);
     }
 
     //無敵狀態觸發
