@@ -21,8 +21,11 @@ public class PlayerController : MonoBehaviour
     private int speed;
     public int moveSpeed;
     public int crouchSpeed;
+    public int slideSpeed;
+    public float slideJumpForce;
     public float jumpForce;
     public bool isCrouch;
+    public bool isSlide;
     public bool isDead;
     private Vector2 initialColliderOffest;
     private Vector2 initialColliderSize;
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
     [Header("傷害擊退")]
     public float hurtForce;
     public bool isHurt;
+
     [Header("攻擊")]
     public bool isAttack;
 
@@ -91,6 +95,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isHurt && !isAttack)
         {
+            Slide();
             Crouch();
             Move();
         }
@@ -104,6 +109,12 @@ public class PlayerController : MonoBehaviour
         {
             speed = crouchSpeed;
         }
+
+        else if (isSlide)
+        {
+            speed = slideSpeed;
+        }
+
         else
         {
             speed = moveSpeed;
@@ -121,6 +132,7 @@ public class PlayerController : MonoBehaviour
                 rb.velocity = new Vector2(0, rb.velocity.y);
             }
         }
+
         //人物翻轉
         int faceDir = (int)transform.localScale.x;
         if (inputDirection.x > 0)
@@ -138,8 +150,16 @@ public class PlayerController : MonoBehaviour
     //跳躍 每觸發一次跳躍鍵就會觸發一次
     private void Jump(InputAction.CallbackContext context)
     {
+
         if (physicsCheck.isGround)
         {
+            //滑行時跳躍可以跳得更高
+            if (isSlide)
+            {
+                rb.AddForce(slideJumpForce * transform.up, ForceMode2D.Impulse);
+                return;
+            }
+
             rb.AddForce(jumpForce * transform.up, ForceMode2D.Impulse);
         }
 
@@ -151,8 +171,8 @@ public class PlayerController : MonoBehaviour
             jumpWallTimeCounter = jumpWallTime;
 
             //給予一個反方向的力 並解除爬牆狀態
-            rb.AddForce(jumpWallForce * new Vector2(-transform.localScale.x * 3, 2), ForceMode2D.Impulse);
-            //rb.velocity = new Vector2(-transform.localScale.x * moveSpeed, jumpWallForce);
+            rb.AddForce(jumpWallForce * new Vector2(-transform.localScale.x * 2, 2), ForceMode2D.Impulse);
+            //rb.velocity = new Vector2(-transform.localScale.x * 10, rb.velocity.y);
             rb.gravityScale = gravityStore;
             isJumpWall = false;
         }
@@ -178,7 +198,7 @@ public class PlayerController : MonoBehaviour
                 jumpWallTimeCounter -= Time.deltaTime;
 
                 isJumpWall = true;
-                //rb.velocity = Vector2.zero;
+                //rb.velocity = new Vector2(rb.velocity.x, 0);
                 rb.gravityScale = 1.5f;
                 print("can jump");
             }
@@ -199,11 +219,28 @@ public class PlayerController : MonoBehaviour
         playerAnimation.Attack();
     }
 
+    public void Slide()
+    {
+        //有左右的位移速度
+        if (Mathf.Abs(rb.velocity.x) > 0.1 && inputDirection.y < 0 && !isCrouch)
+        {
+            isSlide = true;
+            capsuleCollider2D.offset = new Vector2(0.1f, 0.5f);
+            capsuleCollider2D.size = new Vector2(1f, 1f);
+        }
+        else
+        {
+            isSlide = false;
+            capsuleCollider2D.offset = initialColliderOffest;
+            capsuleCollider2D.size = initialColliderSize;
+        }
+    }
+
     //蹲下
     private void Crouch()
     {
         //按下Ｃ鍵，執行下蹲，並改變碰撞器大小
-        if (inputDirection.y < 0)
+        if (inputDirection.y < 0 && !isSlide)
         {
             isCrouch = true;
             capsuleCollider2D.offset = new Vector2(capsuleCollider2D.offset.x, 0.7f);

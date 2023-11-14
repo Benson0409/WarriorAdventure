@@ -333,7 +333,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_10
+      name: slide1-1
       rect:
         serializedVersion: 2
         x: 0
@@ -354,7 +354,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_11
+      name: slide1-2
       rect:
         serializedVersion: 2
         x: 56
@@ -375,7 +375,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_12
+      name: slide1-3
       rect:
         serializedVersion: 2
         x: 112
@@ -396,7 +396,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_13
+      name: slide2-1
       rect:
         serializedVersion: 2
         x: 168
@@ -417,7 +417,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_14
+      name: slide2-2
       rect:
         serializedVersion: 2
         x: 224
@@ -438,7 +438,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_15
+      name: slide3-1
       rect:
         serializedVersion: 2
         x: 280
@@ -459,7 +459,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_16
+      name: slide3-2
       rect:
         serializedVersion: 2
         x: 336
@@ -480,7 +480,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_green_2_17
+      name: slide3-3
       rect:
         serializedVersion: 2
         x: 392
@@ -983,14 +983,6 @@ TextureImporter:
       attack3-8: 1288146620
       char_green_2_0: -1163738685
       char_green_2_1: -1717015066
-      char_green_2_10: -963045339
-      char_green_2_11: 248761899
-      char_green_2_12: 1599403488
-      char_green_2_13: 1096330026
-      char_green_2_14: -304082917
-      char_green_2_15: 456910813
-      char_green_2_16: 718964574
-      char_green_2_17: 1545476708
       char_green_2_2: 259492517
       char_green_2_3: 1082198312
       char_green_2_30: 1658600491
@@ -1013,6 +1005,14 @@ TextureImporter:
       jumpWall2: 1716860558
       jumpWall3: 1946228444
       jumpWall4: -914681100
+      slide1-1: -963045339
+      slide1-2: 248761899
+      slide1-3: 1599403488
+      slide2-1: 1096330026
+      slide2-2: -304082917
+      slide3-1: 456910813
+      slide3-2: 718964574
+      slide3-3: 1545476708
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

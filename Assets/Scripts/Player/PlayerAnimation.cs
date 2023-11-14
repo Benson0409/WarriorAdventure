@@ -30,6 +30,7 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetBool("isDead", playerController.isDead);
         anim.SetBool("isAttack", playerController.isAttack);
         anim.SetBool("jumpWall", playerController.isJumpWall);
+        anim.SetBool("isSlide", playerController.isSlide);
     }
 
     public void GetHurt()
