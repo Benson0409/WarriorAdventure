@@ -36,6 +36,16 @@ public class Character : MonoBehaviour
         }
     }
 
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Water"))
+        {
+            currentHealth = 0;
+            OnDead?.Invoke();
+            OnHealthChange?.Invoke(this);
+        }
+    }
+
     //接受其他人的傷害資訊後，開始判斷當前血量以及無敵狀況
     public void TakeDamage(Attack attacker)
     {

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bounds
+  - Water
   layers:
   - Default
   - TransparentFX
@@ -50,4 +51,10 @@ TagManager:
     locked: 0
   - name: Front
     uniqueID: 2390537315
+    locked: 0
+  - name: Water
+    uniqueID: 1343553159
+    locked: 0
+  - name: Spike
+    uniqueID: 398681223
     locked: 0
