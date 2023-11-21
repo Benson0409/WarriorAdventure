@@ -6,6 +6,9 @@ using System;
 using System.IO.Compression;
 public class CameraControl : MonoBehaviour
 {
+
+    [Header("事件監聽")]
+    public VoidEventSo afterSceneLoadEvent;
     private CinemachineConfiner2D confiner2D;
     public CinemachineCollisionImpulseSource cameraImpulse;
     public VoidEventSo cameraShakeEvent;
@@ -19,14 +22,20 @@ public class CameraControl : MonoBehaviour
     void OnEnable()
     {
         cameraShakeEvent.OnEventRaised += OnCameraShakeEvent;
+        afterSceneLoadEvent.OnEventRaised += OnAfterSceneLoadEvent;
     }
     void OnDisable()
     {
         cameraShakeEvent.OnEventRaised -= OnCameraShakeEvent;
+        afterSceneLoadEvent.OnEventRaised -= OnAfterSceneLoadEvent;
     }
 
 
     void Start()
+    {
+        GetNewCameraBound();
+    }
+    private void OnAfterSceneLoadEvent()
     {
         GetNewCameraBound();
     }

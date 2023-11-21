@@ -1,35 +1,79 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
+
+    [Header("玩家座標")]
+    public Transform playerTrans;
+    public Vector3 firstPosition;
+
     [Header("事件監聽")]
     public SceneLoadEventSo loadEventSo;
     public GameSceneSo firstLoadScene;
 
+    [Header("訊息廣播")]
+    public VoidEventSo afterSceneLoadEventSo;
+
+    //讀取場景傳送之訊息
+    //當前場景
     private GameSceneSo currentScene;
+
+    //即將加載場景
     private GameSceneSo loadScene;
+
+    //玩家要前往位置
     private Vector3 positionToGo;
+
+    [Header("變量控制")]
+    private bool isLoading;
     private bool fadeScreen;
     public float fadeDuration;
-    void Awake()
+    // void Awake()
+    // {
+    //     // Addressables.LoadSceneAsync(firstLoadScene.sceneReference, LoadSceneMode.Additive);
+    //     currentScene = firstLoadScene;
+    //     currentScene.sceneReference.LoadSceneAsync(LoadSceneMode.Additive);
+    // }
+
+    //Menu完成之後要更改
+    void Start()
     {
-        // Addressables.LoadSceneAsync(firstLoadScene.sceneReference, LoadSceneMode.Additive);
-        currentScene = firstLoadScene;
-        currentScene.sceneReference.LoadSceneAsync(LoadSceneMode.Additive);
+        NewGame();
     }
     void OnEnable()
     {
         loadEventSo.LoadRequestEvent += OnLoadRequestEvent;
     }
 
-
     void OnDisable()
     {
         loadEventSo.LoadRequestEvent += OnLoadRequestEvent;
     }
+
+    private void NewGame()
+    {
+        loadScene = firstLoadScene;
+        OnLoadRequestEvent(loadScene, firstPosition, true);
+    }
+
+    /// <summary>
+    /// 場景加載事件請求
+    /// </summary>
+    /// <param name="locationToLoad"></param>
+    /// <param name="posToGo"></param>
+    /// <param name="fadeScreen"></param>
     private void OnLoadRequestEvent(GameSceneSo locationToLoad, Vector3 posToGo, bool fadeScreen)
     {
+        if (isLoading)
+        {
+            return;
+        }
+        isLoading = true;
+
         loadScene = locationToLoad;
         positionToGo = posToGo;
         this.fadeScreen = fadeScreen;
@@ -37,6 +81,10 @@ public class SceneLoader : MonoBehaviour
         if (currentScene != null)
         {
             StartCoroutine(UnloadPreviousScene());
+        }
+        else
+        {
+            LoadNewScene();
         }
     }
 
@@ -48,11 +96,40 @@ public class SceneLoader : MonoBehaviour
         }
         yield return new WaitForSeconds(fadeDuration);
         yield return currentScene.sceneReference.UnLoadScene();
+
+        //關閉人物
+        playerTrans.gameObject.SetActive(false);
+
+        //載入新場景
         LoadNewScene();
     }
 
     private void LoadNewScene()
     {
-        loadScene.sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
+        var loadingOption = loadScene.sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
+        loadingOption.Completed += OnLOadComoleted;
+    }
+
+    /// <summary>
+    /// 場景加載完成後
+    /// </summary>
+    /// <param name="obj"></param>
+    private void OnLOadComoleted(AsyncOperationHandle<SceneInstance> obj)
+    {
+        currentScene = loadScene;
+        playerTrans.position = positionToGo;
+
+        //開啟人物
+        playerTrans.gameObject.SetActive(true);
+
+        //漸入漸出
+        if (fadeScreen)
+        {
+
+        }
+        isLoading = false;
+
+        //場景加載完成後廣播訊息
+        afterSceneLoadEventSo.RaiseEvent();
     }
 }
