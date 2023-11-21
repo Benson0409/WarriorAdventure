@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 public class SceneLoader : MonoBehaviour
 {
 
@@ -27,6 +28,9 @@ public class SceneLoader : MonoBehaviour
 
     //玩家要前往位置
     private Vector3 positionToGo;
+
+    [Header("淡入淡出")]
+    public CanvasGroup fadeCanva;
 
     [Header("變量控制")]
     private bool isLoading;
@@ -84,15 +88,17 @@ public class SceneLoader : MonoBehaviour
         }
         else
         {
+
             LoadNewScene();
         }
     }
 
     private IEnumerator UnloadPreviousScene()
     {
+        //漸入
         if (fadeScreen)
         {
-            //實現漸入漸出
+            StartCoroutine(FadeOutScenes());
         }
         yield return new WaitForSeconds(fadeDuration);
         yield return currentScene.sceneReference.UnLoadScene();
@@ -107,14 +113,14 @@ public class SceneLoader : MonoBehaviour
     private void LoadNewScene()
     {
         var loadingOption = loadScene.sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
-        loadingOption.Completed += OnLOadComoleted;
+        loadingOption.Completed += OnLoadComoleted;
     }
 
     /// <summary>
     /// 場景加載完成後
     /// </summary>
     /// <param name="obj"></param>
-    private void OnLOadComoleted(AsyncOperationHandle<SceneInstance> obj)
+    private void OnLoadComoleted(AsyncOperationHandle<SceneInstance> obj)
     {
         currentScene = loadScene;
         playerTrans.position = positionToGo;
@@ -122,14 +128,39 @@ public class SceneLoader : MonoBehaviour
         //開啟人物
         playerTrans.gameObject.SetActive(true);
 
-        //漸入漸出
+        //漸出
         if (fadeScreen)
         {
-
+            StartCoroutine(FadeInScenes());
         }
         isLoading = false;
 
         //場景加載完成後廣播訊息
         afterSceneLoadEventSo.RaiseEvent();
+    }
+
+    public IEnumerator FadeOutScenes()
+    {
+        yield return FadeOut(fadeDuration);
+    }
+    public IEnumerator FadeInScenes()
+    {
+        yield return FadeIn(fadeDuration);
+    }
+    public IEnumerator FadeOut(float time)
+    {
+        while (fadeCanva.alpha < 1)
+        {
+            fadeCanva.alpha += Time.deltaTime / time;
+            yield return null;
+        }
+    }
+    public IEnumerator FadeIn(float time)
+    {
+        while (fadeCanva.alpha != 0)
+        {
+            fadeCanva.alpha -= Time.deltaTime / time;
+            yield return null;
+        }
     }
 }
