@@ -15,6 +15,7 @@ public class SceneLoader : MonoBehaviour
     [Header("事件監聽")]
     public SceneLoadEventSo loadEventSo;
     public GameSceneSo firstLoadScene;
+    public FadeEventSo fadeEvent;
 
     [Header("訊息廣播")]
     public VoidEventSo afterSceneLoadEventSo;
@@ -30,7 +31,7 @@ public class SceneLoader : MonoBehaviour
     private Vector3 positionToGo;
 
     [Header("淡入淡出")]
-    public CanvasGroup fadeCanva;
+    //public CanvasGroup fadeCanva;
 
     [Header("變量控制")]
     private bool isLoading;
@@ -98,7 +99,8 @@ public class SceneLoader : MonoBehaviour
         //漸入
         if (fadeScreen)
         {
-            StartCoroutine(FadeOutScenes());
+            fadeEvent.FadeIn(fadeDuration);
+            //StartCoroutine(FadeOutScenes());
         }
         yield return new WaitForSeconds(fadeDuration);
         yield return currentScene.sceneReference.UnLoadScene();
@@ -131,7 +133,8 @@ public class SceneLoader : MonoBehaviour
         //漸出
         if (fadeScreen)
         {
-            StartCoroutine(FadeInScenes());
+            fadeEvent.FadeOut(fadeDuration);
+            //StartCoroutine(FadeInScenes());
         }
         isLoading = false;
 
@@ -139,28 +142,30 @@ public class SceneLoader : MonoBehaviour
         afterSceneLoadEventSo.RaiseEvent();
     }
 
-    public IEnumerator FadeOutScenes()
-    {
-        yield return FadeOut(fadeDuration);
-    }
-    public IEnumerator FadeInScenes()
-    {
-        yield return FadeIn(fadeDuration);
-    }
-    public IEnumerator FadeOut(float time)
-    {
-        while (fadeCanva.alpha < 1)
-        {
-            fadeCanva.alpha += Time.deltaTime / time;
-            yield return null;
-        }
-    }
-    public IEnumerator FadeIn(float time)
-    {
-        while (fadeCanva.alpha != 0)
-        {
-            fadeCanva.alpha -= Time.deltaTime / time;
-            yield return null;
-        }
-    }
+
+    //舊版淡入淡出效果
+    // public IEnumerator FadeOutScenes()
+    // {
+    //     yield return FadeOut(fadeDuration);
+    // }
+    // public IEnumerator FadeInScenes()
+    // {
+    //     yield return FadeIn(fadeDuration);
+    // }
+    // public IEnumerator FadeOut(float time)
+    // {
+    //     while (fadeCanva.alpha < 1)
+    //     {
+    //         fadeCanva.alpha += Time.deltaTime / time;
+    //         yield return null;
+    //     }
+    // }
+    // public IEnumerator FadeIn(float time)
+    // {
+    //     while (fadeCanva.alpha != 0)
+    //     {
+    //         fadeCanva.alpha -= Time.deltaTime / time;
+    //         yield return null;
+    //     }
+    // }
 }

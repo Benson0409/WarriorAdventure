@@ -17,7 +17,7 @@ public class SnailPatrolState : BasicState
             currentEnemy.SwitchState(NPCState.Hide);
         }
         //正常左右巡邏狀態
-        if ((!currentEnemy.physicsCheck.isGround) || (currentEnemy.physicsCheck.isLeftWall && currentEnemy.faceDir.x < 0) || (currentEnemy.physicsCheck.isRightWall && currentEnemy.faceDir.x > 0))
+        if ((!currentEnemy.physicsCheck.isGround) || (currentEnemy.physicsCheck.isLeftWall && currentEnemy.faceDir.x > 0) || (currentEnemy.physicsCheck.isRightWall && currentEnemy.faceDir.x < 0))
         {
             currentEnemy.isWait = true;
             currentEnemy.anim.SetBool("walk", false);
