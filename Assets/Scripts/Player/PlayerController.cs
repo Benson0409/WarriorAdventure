@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 currentInputVector;
     private Vector2 smoothInputVelocity;
     private float smoothInputSpeed = 0.2f;
-
+    [Header("事件監聽")]
+    public SceneLoadEventSo loadEvent;
+    public VoidEventSo afterLoadSceneEvent;
     [Header("人物操控變量")]
     private int speed;
     public int moveSpeed;
@@ -72,11 +74,17 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         playerInputController.Enable();
+        loadEvent.LoadRequestEvent += OnLoadEvent;
+        afterLoadSceneEvent.OnEventRaised += OnAfterLoadScene;
     }
+
+
 
     void OnDisable()
     {
         playerInputController.Disable();
+        loadEvent.LoadRequestEvent -= OnLoadEvent;
+        afterLoadSceneEvent.OnEventRaised -= OnAfterLoadScene;
     }
 
     void Update()
@@ -278,5 +286,17 @@ public class PlayerController : MonoBehaviour
     {
         isDead = true;
         playerInputController.GamePlay.Disable();
+    }
+
+    //場景加載停止控制
+    private void OnLoadEvent(GameSceneSo arg0, Vector3 arg1, bool arg2)
+    {
+        playerInputController.GamePlay.Disable();
+    }
+
+    //場景加載完成啟動控制
+    private void OnAfterLoadScene()
+    {
+        playerInputController.GamePlay.Enable();
     }
 }

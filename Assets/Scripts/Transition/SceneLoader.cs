@@ -62,7 +62,8 @@ public class SceneLoader : MonoBehaviour
     private void NewGame()
     {
         loadScene = firstLoadScene;
-        OnLoadRequestEvent(loadScene, firstPosition, true);
+        //OnLoadRequestEvent(loadScene, firstPosition, true);
+        loadEventSo.RaiseLoadRequestEvent(loadScene, firstPosition, true);
     }
 
     /// <summary>
@@ -138,8 +139,12 @@ public class SceneLoader : MonoBehaviour
         }
         isLoading = false;
 
-        //場景加載完成後廣播訊息
-        afterSceneLoadEventSo.RaiseEvent();
+        //只有場景內容是location在執行場景加載完成的訊息
+        if (currentScene.sceneType == Scenetype.location)
+        {
+            //場景加載完成後廣播訊息
+            afterSceneLoadEventSo.RaiseEvent();
+        }
     }
 
 
