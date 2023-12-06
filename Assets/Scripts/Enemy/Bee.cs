@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class Bee : Enemy
 {
     [Header("玩家位置")]
-    private GameObject player;
+    public GameObject player;
     [Header("蜜蜂位置判斷")]
     private Vector2 initialPosition;
     public bool isHere;
@@ -19,7 +19,7 @@ public class Bee : Enemy
         patrolState = new BeePatrolState();
         chaseState = new BeeChaseState();
         attackState = new BeeAttackState();
-        player = GameObject.Find("Player");
+        //player = GameObject.Find("Player");
         initialPosition = transform.position;
         targetPosition = RandomBeeTargetPosition();
     }
@@ -44,6 +44,7 @@ public class Bee : Enemy
 
         if (currentState == chaseState || currentState == attackState)
         {
+            player = GameObject.Find("Player");
             //追擊玩家，以動到玩家身邊
             targetPosition = player.transform.position;
 

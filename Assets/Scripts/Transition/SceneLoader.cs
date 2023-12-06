@@ -11,11 +11,16 @@ public class SceneLoader : MonoBehaviour
     [Header("玩家座標")]
     public Transform playerTrans;
     public Vector3 firstPosition;
+    public Vector3 menuPosition;
 
     [Header("事件監聽")]
     public SceneLoadEventSo loadEventSo;
+    public VoidEventSo newGameEventSo;
+    public FadeEventSo fadeEventSo;
+    public SceneLoadEventSo unLoadSceneEventSo;
+    [Header("場景")]
     public GameSceneSo firstLoadScene;
-    public FadeEventSo fadeEvent;
+    public GameSceneSo menuScene;
 
     [Header("訊息廣播")]
     public VoidEventSo afterSceneLoadEventSo;
@@ -47,16 +52,19 @@ public class SceneLoader : MonoBehaviour
     //Menu完成之後要更改
     void Start()
     {
-        NewGame();
+        loadEventSo.RaiseLoadRequestEvent(menuScene, menuPosition, true);
+        //NewGame();
     }
     void OnEnable()
     {
         loadEventSo.LoadRequestEvent += OnLoadRequestEvent;
+        newGameEventSo.OnEventRaised += NewGame;
     }
 
     void OnDisable()
     {
-        loadEventSo.LoadRequestEvent += OnLoadRequestEvent;
+        loadEventSo.LoadRequestEvent -= OnLoadRequestEvent;
+        newGameEventSo.OnEventRaised -= NewGame;
     }
 
     private void NewGame()
@@ -100,10 +108,11 @@ public class SceneLoader : MonoBehaviour
         //漸入
         if (fadeScreen)
         {
-            fadeEvent.FadeIn(fadeDuration);
+            fadeEventSo.FadeIn(fadeDuration);
             //StartCoroutine(FadeOutScenes());
         }
         yield return new WaitForSeconds(fadeDuration);
+        unLoadSceneEventSo.LoadRequestEvent(loadScene, positionToGo, true);
         yield return currentScene.sceneReference.UnLoadScene();
 
         //關閉人物
@@ -134,7 +143,7 @@ public class SceneLoader : MonoBehaviour
         //漸出
         if (fadeScreen)
         {
-            fadeEvent.FadeOut(fadeDuration);
+            fadeEventSo.FadeOut(fadeDuration);
             //StartCoroutine(FadeInScenes());
         }
         isLoading = false;

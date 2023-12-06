@@ -7,7 +7,8 @@ public class Character : MonoBehaviour
     [Header("人物資訊")]
     public float maxHealth;
     public float currentHealth;
-
+    [Header("事件監聽")]
+    public VoidEventSo newGameEventSo;
     [Header("受傷無敵")]
     public float invulnerableDuration;
     private float invulnerableCounter;
@@ -18,11 +19,17 @@ public class Character : MonoBehaviour
     public UnityEvent<Character> OnHealthChange;
     public UnityEvent<Transform> OnTakeDamage;
     public UnityEvent OnDead;
-    void Start()
+
+    private void OnEnable()
     {
-        currentHealth = maxHealth;
-        OnHealthChange?.Invoke(this);
+        newGameEventSo.OnEventRaised += NewGame;
     }
+
+    void OnDisable()
+    {
+        newGameEventSo.OnEventRaised -= NewGame;
+    }
+
     void Update()
     {
         //無敵時間倒計時
@@ -35,7 +42,11 @@ public class Character : MonoBehaviour
             }
         }
     }
-
+    void NewGame()
+    {
+        currentHealth = maxHealth;
+        OnHealthChange?.Invoke(this);
+    }
     private void OnTriggerStay2D(Collider2D other)
     {
 

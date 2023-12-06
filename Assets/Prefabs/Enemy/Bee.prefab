@@ -351,9 +351,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 40
   currentHealth: 0
+  newGameEventSo: {fileID: 11400000, guid: a04509b26d8fc427498ca4fc2c903d53, type: 2}
   invulnerableDuration: 0.5
   invulnerable: 0
   defence: 0
+  OnHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
   OnTakeDamage:
     m_PersistentCalls:
       m_Calls:
@@ -460,7 +464,6 @@ MonoBehaviour:
   isWait: 0
   lostTime: 1
   lostTimeCounter: 0
-  player: {fileID: 0}
   isHere: 0
   isGroud: 0
   targetPosition: {x: 0, y: 0}
